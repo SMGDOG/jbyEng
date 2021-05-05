@@ -96,7 +96,7 @@ public class Repository {
 	public boolean user_login(String id,String name) {
 		CallableStatement cs=null;
 		try {
-			cs=conn.prepareCall("{call login_or_changePassword(?,?)}");
+			cs=conn.prepareCall("{call login(?,?)}");
 			cs.setObject(1, id);
 			cs.setObject(2, name);
 			cs.execute();
@@ -122,12 +122,11 @@ public class Repository {
 		}
 	}
 	
-	public boolean user_reset(String id,String table_name) {
+	public boolean user_reset(String id) {
 		CallableStatement cs=null;
 		try {
-			cs=conn.prepareCall("{call reset_log(?,?)}");
+			cs=conn.prepareCall("{call reset_log(?)}");
 			cs.setObject(1, id);
-			cs.setObject(2, table_name);
 			cs.execute();
 			return true;
 		} catch (SQLException e) {
@@ -136,19 +135,51 @@ public class Repository {
 		}
 	}
 	
-	public int user_get(String id,String table_name) {
-		int num=0;
+	public boolean user_getNum(String id, int num) {
 		CallableStatement cs=null;
 		try {
-			cs=conn.prepareCall("{call get_log(?,?,?)}");
+			cs=conn.prepareCall("{call get_log(?,?)}");
 			cs.setObject(1, id);
-			cs.setObject(2, table_name);
-			cs.registerOutParameter(3,java.sql.Types.INTEGER);
+			cs.setObject(2, num);
 			cs.execute();
-			num=cs.getInt(3);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public Map<String,Object> user_getinfo(String id){
+		Map<String,Object> map=new HashMap<String,Object>();
+		CallableStatement cs=null;
+		try {
+			cs=conn.prepareCall("{call get_learninfo(?,?,?,?)}");
+			cs.setObject(1, id);
+			cs.registerOutParameter(2,java.sql.Types.NVARCHAR);
+			cs.registerOutParameter(3,java.sql.Types.INTEGER);
+			cs.registerOutParameter(4,java.sql.Types.INTEGER);
+			cs.execute();
+			map.put("id", id);
+			map.put("正在学习", cs.getObject(2));
+			map.put("每日学习量", cs.getObject(3));
+			map.put("已学习数量", cs.getObject(4));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return num;
+		return map;
+	}
+	
+	public boolean user_resetNum(String id,int num) {
+		CallableStatement cs=null;
+		try {
+			cs=conn.prepareCall("{call reset_num(?,?)}");
+			cs.setObject(1, id);
+			cs.setObject(2, num);
+			cs.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
