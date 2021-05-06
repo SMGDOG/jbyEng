@@ -1,0 +1,7 @@
+<!--pages/index/index.wxml-->
+<input type="text" class="input" placeholder="请输入每日学习量" bindinput='input'></input>
+<button bindtap='button1'>导入CET4词库</button>
+<button bindtap='button2'>导入CET6词库</button>
+<button bindtap='button3'>设置每日学习量</button>
+<button bindtap='button4'>开始学习</button>
+<button bindtap='button5'>重置学习情况</button>

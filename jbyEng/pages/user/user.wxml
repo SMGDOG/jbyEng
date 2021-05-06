@@ -1,0 +1,16 @@
+<!--pages/user/user.wxml-->
+<view wx:if="{{id!=''}}">
+   ID:{{id}}
+  </view>
+  <view wx:if="{{name!=''}}">
+   姓名:{{name}}
+  </view>
+  <view>
+    正在学习:{{learn_table}}
+  </view>
+  <view>
+    每日学习量:{{learn_num}}
+  </view>
+  <view>
+    已学习数量:{{learn_sum}}
+  </view>

@@ -1,0 +1,8 @@
+<!--pages/learn/learn.wxml-->
+<button bindtap='button_begin'>开始学习</button>
+<view>单词:{{word}}</view>
+<view>发音:{{pron}}</view>
+<view wx:if="{{show}}">翻译:{{tran}}</view>
+<button bindtap='button_miss'>不认识</button>
+<button bindtap='button_next'>下一个</button>
+<view wx:if="{{complete}}">完成学习</view>
