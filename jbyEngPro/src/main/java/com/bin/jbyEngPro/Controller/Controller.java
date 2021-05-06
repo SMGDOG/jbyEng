@@ -60,4 +60,9 @@ public class Controller {
     public boolean resetNum(String id,int num) {
     	return link.user_resetNum(id, num);
     }
+    //获取今天要学习的单词
+    @RequestMapping("/getTodayWord")
+    public Map<String,Object> getTodayWord(String id){
+    	return link.getTodayWord(id);
+    }
 }

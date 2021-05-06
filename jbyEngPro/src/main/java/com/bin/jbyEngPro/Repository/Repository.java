@@ -182,4 +182,62 @@ public class Repository {
 			return false;
 		}
 	}
+	
+	public Map<String,Object> getTodayWord(String id){
+		Map<String,Object> map=new HashMap<String,Object>();
+		String table=null;
+		int num=0;
+		int sum=0;
+		CallableStatement cs1=null;
+		try {
+			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?)}");
+			cs1.setObject(1, id);
+			cs1.registerOutParameter(2,java.sql.Types.NVARCHAR);
+			cs1.registerOutParameter(3,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(4,java.sql.Types.INTEGER);
+			cs1.execute();
+			table=cs1.getNString(2);
+			num=cs1.getInt(3);
+			sum=cs1.getInt(4);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		int first=sum+1;
+		int last=num+sum;
+		Statement st=null;
+		ResultSet rs=null;
+		EngList list=new EngList();
+		if(table.equals("CET4")) {
+			String sql=String.format("select * from CET4 where 序号>=%d and 序号<=%d",first,last);
+			try {
+				st=conn.createStatement();
+				rs=st.executeQuery(sql);
+				while(rs.next()) {
+					if(rs.getString(2)!=null)list.wordList.add(rs.getString(2));
+					if(rs.getString(3)!=null)list.pronunciation.add(rs.getString(3));
+					if(rs.getString(4)!=null)list.translation.add(rs.getString(4));
+	            }
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		else if(table.equals("CET6")) {
+			String sql=String.format("select * from CET6 where 序号>=%d and 序号<=%d",first,last);
+			try {
+				st=conn.createStatement();
+				rs=st.executeQuery(sql);
+				while(rs.next()) {
+					if(rs.getString(2)!=null)list.wordList.add(rs.getString(2));
+					if(rs.getString(3)!=null)list.pronunciation.add(rs.getString(3));
+					if(rs.getString(4)!=null)list.translation.add(rs.getString(4));
+	            }
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		map.put("单词",list.wordList);
+		map.put("发音",list.pronunciation);
+		map.put("翻译",list.translation);
+		return map;
+	}
 }
