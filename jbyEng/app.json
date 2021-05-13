@@ -3,7 +3,9 @@
     "pages/index/index",
     "pages/search/search",
     "pages/user/user",
-    "pages/learn/learn"
+    "pages/learn/learn",
+    "pages/review/review",
+    "pages/help/help"
   ],
   "tabBar": {
     "list": [

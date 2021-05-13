@@ -1,7 +1,21 @@
 <!--pages/index/index.wxml-->
-<input type="text" class="input" placeholder="请输入每日学习量" bindinput='input'></input>
-<button bindtap='button1'>导入CET4词库</button>
-<button bindtap='button2'>导入CET6词库</button>
-<button bindtap='button3'>设置每日学习量</button>
-<button bindtap='button4'>开始学习</button>
-<button bindtap='button5'>重置学习情况</button>
+<view class='a'>
+<button class='b' bindtap='button1'>导入CET4词库</button>
+<button class='b' bindtap='button2'>导入CET6词库</button>
+<button class='b' bindtap='button3'>设置每组学习量</button>
+<button class='b' bindtap='button4'>开始学习</button>
+<button class='b' bindtap='button5'>重置学习情况</button>
+<button class='b' bindtap='button6'>开始复习</button>
+</view>
+
+<modal hidden="{{isResetNum}}" title="重新设置每组背诵量" confirm-text="确定" cancel-text="取消" bindcancel="cancel1" bindconfirm="confirm1">
+    <input bindinput='input1' type='text' placeholder="输入每组背诵量" 
+    value='{{day_num}}'></input>
+</modal>
+
+<modal hidden="{{isReset}}" title="重置学习记录" confirm-text="确定" cancel-text="取消" bindcancel="cancel2" bindconfirm="confirm2">你确定要重置当前学习记录吗</modal>
+
+<modal hidden="{{isGetWord}}" title="开始新的学习" confirm-text="确定" cancel-text="取消" bindcancel="cancel3" bindconfirm="confirm3">开始新的学习会清除旧的学习数据哦
+    <input bindinput='input2' type='text' placeholder="输入每组背诵数目" 
+    value='{{day_num}}'></input>
+</modal>
