@@ -10,13 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import com.bin.jbyEngPro.EngList;
 
+//数据库操作
 public class Repository {
 	private String driverName="com.microsoft.sqlserver.jdbc.SQLServerDriver";
 	private String url="jdbc:sqlserver://localhost:1433; DatabaseName=jbyEng";
 	private String username="sa";
 	private String password="aA415263748596";
 	private Connection conn=null;
-	
+	//初始化连接
 	public Repository() {
 		try {
 			Class.forName(driverName);
@@ -29,7 +30,7 @@ public class Repository {
 			e.printStackTrace();
 		}
 	}
-	
+	//获取单词库
 	public Map<String,Object> getEngList(int type){
 		EngList list=new EngList();
 		Map<String,Object> map=new HashMap<String, Object>();
@@ -70,7 +71,7 @@ public class Repository {
 		map.put("翻译",list.translation);
 		return map;
 	}
-	
+	//搜索单词
 	public Map<String,String> searchWord(String word){
 		Map<String,String> map=new HashMap<String,String>();
 		CallableStatement cs=null;
@@ -92,7 +93,7 @@ public class Repository {
 		}
 		return map;
 	}
-	
+	//登陆
 	public boolean user_login(String id) {
 		CallableStatement cs=null;
 		try {
@@ -105,7 +106,7 @@ public class Repository {
 			return false;
 		}
 	}
-	
+	//改变昵称
 	public boolean change_name(String id, String name) {
 		CallableStatement cs=null;
 		try {
@@ -119,7 +120,7 @@ public class Repository {
 			return false;
 		}
 	}
-	
+	//设置学习
 	public boolean user_learn(String id,int num,String table_name) {
 		CallableStatement cs=null;
 		try {
@@ -134,7 +135,7 @@ public class Repository {
 			return false;
 		}
 	}
-	
+	//重置学习
 	public boolean user_reset(String id) {
 		CallableStatement cs=null;
 		try {
@@ -147,7 +148,7 @@ public class Repository {
 			return false;
 		}
 	}
-	
+	//记录学习
 	public boolean user_getNum(String id, int num) {
 		CallableStatement cs=null;
 		try {
@@ -161,7 +162,7 @@ public class Repository {
 			return false;
 		}
 	}
-	
+	//获取用户信息
 	public Map<String,Object> user_getinfo(String id){
 		Map<String,Object> map=new HashMap<String,Object>();
 		CallableStatement cs=null;
@@ -185,7 +186,7 @@ public class Repository {
 		}
 		return map;
 	}
-	
+	//重新设置每日学习量
 	public boolean user_resetNum(String id,int num) {
 		CallableStatement cs=null;
 		try {
@@ -199,12 +200,12 @@ public class Repository {
 			return false;
 		}
 	}
-	
+	//获取今日份学习
 	public Map<String,Object> getTodayWord(String id){
 		Map<String,Object> map=new HashMap<String,Object>();
-		String table=null;
-		int num=0;
-		int sum=0;
+		String table=null;//单词库
+		int num=0;//学习总量
+		int sum=0;//复习总量
 		CallableStatement cs1=null;
 		try {
 			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?,?,?)}");
@@ -262,13 +263,13 @@ public class Repository {
 		map.put("翻译",list.translation);
 		return map;
 	}
-	
+	//获取今日份复习单词
 	public Map<String,Object> getReviewWord(String id){
 		Map<String,Object> map=new HashMap<String,Object>();
-		String table=null;
-		int num=0;
-		int sum=0;
-		int review=0;
+		String table=null;//单词库
+		int num=0;//每日学习量
+		int sum=0;//学习总量
+		int review=0;//复习总量
 		CallableStatement cs1=null;
 		try {
 			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?,?,?)}");
@@ -338,10 +339,10 @@ public class Repository {
 		map.put("翻译",list.translation);
 		return map;
 	}
-	
+	//记录复习情况
 	public boolean getReviewNum(String id, int num) {
-		int review=0;
-		int sum=0;
+		int review=0;//复习两
+		int sum=0;//学习总量
 		CallableStatement cs1=null;
 		try {
 			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?,?,?)}");
