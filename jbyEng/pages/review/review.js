@@ -103,7 +103,7 @@ Page({
     var app=getApp()
     var that=this
     wx.request({
-      url: 'http://localhost:8083/jbyEng/getTodayWord',
+      url: 'http://localhost:8083/jbyEng/getReviewWord',
       data:{
         id:app.globalData.user_id,
       },
@@ -154,7 +154,7 @@ Page({
     var app=getApp()
     if(that.data.complete){
       wx.request({
-        url: 'http://localhost:8083/jbyEng/getNum',
+        url: 'http://localhost:8083/jbyEng/getReviewNum',
         data:{
           id:app.globalData.user_id,
           num:that.data.complete_count

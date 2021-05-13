@@ -1,14 +1,10 @@
-/* pages/index/index.wxss */
+/* pages/help/help.wxss */
 .a{
   height: 430px;
-  width:320px;
+  width:300px;
   background-color:#78dd78;
   padding:10px;
   display:flex;
   flex-direction:column;
   justify-content:space-around;
-}
-.b{
-  border-radius: 98rpx;
-  background-color:#34bd62;
 }

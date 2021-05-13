@@ -30,7 +30,7 @@ Page({
         'content-type': 'application/json'
       },
       success: function (res) {
-        console.log("success")
+        console.log("search success")
         var word=that.data.word
         var pron_a=res.data.美式发音
         var pron_e=res.data.英式发音
