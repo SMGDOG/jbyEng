@@ -9,9 +9,16 @@ Page({
     name:"",
     learn_table:"",
     learn_num:"",
-    learn_sum:""
+    learn_sum:"",
+    review:'',
+    isChangeName:true,
+    newname:''
   },
-
+  help: function(){
+    wx.navigateTo({
+      url: '/pages/help/help',
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -25,7 +32,43 @@ Page({
   onReady: function () {
 
   },
-
+  changeName: function(){
+    this.setData({  
+      isChangeName:!this.data.isChangeName  
+    }) 
+  },
+  cancel: function(){  
+    this.setData({  
+      isChangeName:true  
+    });  
+  },  
+  confirm: function(){
+    var that=this
+    var app=getApp()
+    wx.request({
+      url: 'http://localhost:8083/jbyEng/changeName',
+      data:{
+        id:app.globalData.user_id,
+        name:that.data.newname
+      },
+      method: 'GET',
+      header: {
+        'content-type': 'application/json'
+      },
+      success: function (res) {
+        console.log("change success")
+        that.setData({
+          name:that.data.newname,
+          isChangeName:true
+        })
+      }
+    })
+  },
+  input: function (e) {
+    this.setData({
+      newname:e.detail.value
+    })
+  },
   /**
    * 生命周期函数--监听页面显示
    */
@@ -42,12 +85,13 @@ Page({
         'content-type': 'application/json'
       },
       success: function (res) {
-        console.log("success")
+        console.log("getInfo_success")
         var id=app.globalData.user_id
-        var name=app.globalData.user_name
+        var name=res.data.name
         var table=res.data.正在学习
         var num=res.data.每日学习量
         var sum=res.data.已学习数量
+        var review=res.data.已复习数量
         if(table==null){
           table="无"
         }
@@ -56,7 +100,8 @@ Page({
             name:name,
             learn_table:table,
             learn_num:num,
-            learn_sum:sum
+            learn_sum:sum,
+            review:review
         })
       }
     })

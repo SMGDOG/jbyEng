@@ -1,16 +1,24 @@
 <!--pages/user/user.wxml-->
-<view wx:if="{{id!=''}}">
-   ID:{{id}}
+<view class='userLearnInfo'>
+  <view class='info1' wx:if="{{id!=''}}">
+    <view class='b'>昵称:{{name}}</view>
+    <view class='b'>id:{{id}}</view>
+    <view class='b'>
+      <button class='changeName' bindtap='changeName'>修改昵称</button>
+    </view>
   </view>
-  <view wx:if="{{name!=''}}">
-   姓名:{{name}}
+  <view class='info2' wx:if="{{id!=''}}">
+    <view class='a'>正在学习:{{learn_table}}</view>
+    <view class="line"></view>
+    <view class='a'>每日学习量:{{learn_num}}</view>
+    <view class="line"></view>
+    <view class='a'>已学习数量:{{learn_sum}}</view>
+    <view class="line"></view>
+    <view class='a'>已复习数量:{{review}}</view>
+    <view class="line"></view>
   </view>
-  <view>
-    正在学习:{{learn_table}}
-  </view>
-  <view>
-    每日学习量:{{learn_num}}
-  </view>
-  <view>
-    已学习数量:{{learn_sum}}
-  </view>
+  <button class='help' bindtap='help'>使用说明</button>
+</view>
+<modal hidden="{{isChangeName}}" title="请输入新名字" confirm-text="确定" cancel-text="取消" bindcancel="cancel" bindconfirm="confirm">  
+    <input class='input' bindinput='input' type='text'placeholder="请输入新名字"></input>
+</modal>
