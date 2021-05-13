@@ -93,10 +93,23 @@ public class Repository {
 		return map;
 	}
 	
-	public boolean user_login(String id,String name) {
+	public boolean user_login(String id) {
 		CallableStatement cs=null;
 		try {
-			cs=conn.prepareCall("{call login(?,?)}");
+			cs=conn.prepareCall("{call login(?)}");
+			cs.setObject(1, id);
+			cs.execute();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean change_name(String id, String name) {
+		CallableStatement cs=null;
+		try {
+			cs=conn.prepareCall("{call changeName(?,?)}");
 			cs.setObject(1, id);
 			cs.setObject(2, name);
 			cs.execute();
@@ -153,16 +166,20 @@ public class Repository {
 		Map<String,Object> map=new HashMap<String,Object>();
 		CallableStatement cs=null;
 		try {
-			cs=conn.prepareCall("{call get_learninfo(?,?,?,?)}");
+			cs=conn.prepareCall("{call get_learninfo(?,?,?,?,?,?)}");
 			cs.setObject(1, id);
 			cs.registerOutParameter(2,java.sql.Types.NVARCHAR);
-			cs.registerOutParameter(3,java.sql.Types.INTEGER);
+			cs.registerOutParameter(3,java.sql.Types.NVARCHAR);
 			cs.registerOutParameter(4,java.sql.Types.INTEGER);
+			cs.registerOutParameter(5,java.sql.Types.INTEGER);
+			cs.registerOutParameter(6,java.sql.Types.INTEGER);
 			cs.execute();
 			map.put("id", id);
-			map.put("正在学习", cs.getObject(2));
-			map.put("每日学习量", cs.getObject(3));
-			map.put("已学习数量", cs.getObject(4));
+			map.put("name", cs.getObject(2));
+			map.put("正在学习", cs.getObject(3));
+			map.put("每日学习量", cs.getObject(4));
+			map.put("已学习数量", cs.getObject(5));
+			map.put("已复习数量", cs.getObject(6));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -190,17 +207,22 @@ public class Repository {
 		int sum=0;
 		CallableStatement cs1=null;
 		try {
-			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?)}");
+			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?,?,?)}");
 			cs1.setObject(1, id);
 			cs1.registerOutParameter(2,java.sql.Types.NVARCHAR);
-			cs1.registerOutParameter(3,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(3,java.sql.Types.NVARCHAR);
 			cs1.registerOutParameter(4,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(5,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(6,java.sql.Types.INTEGER);
 			cs1.execute();
-			table=cs1.getNString(2);
-			num=cs1.getInt(3);
-			sum=cs1.getInt(4);
+			table=cs1.getNString(3);
+			num=cs1.getInt(4);
+			sum=cs1.getInt(5);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+		if(num==0) {
+			return null;
 		}
 		int first=sum+1;
 		int last=num+sum;
@@ -239,5 +261,126 @@ public class Repository {
 		map.put("发音",list.pronunciation);
 		map.put("翻译",list.translation);
 		return map;
+	}
+	
+	public Map<String,Object> getReviewWord(String id){
+		Map<String,Object> map=new HashMap<String,Object>();
+		String table=null;
+		int num=0;
+		int sum=0;
+		int review=0;
+		CallableStatement cs1=null;
+		try {
+			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?,?,?)}");
+			cs1.setObject(1, id);
+			cs1.registerOutParameter(2,java.sql.Types.NVARCHAR);
+			cs1.registerOutParameter(3,java.sql.Types.NVARCHAR);
+			cs1.registerOutParameter(4,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(5,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(6,java.sql.Types.INTEGER);
+			cs1.execute();
+			table=cs1.getNString(3);
+			num=cs1.getInt(4);
+			sum=cs1.getInt(5);
+			review=cs1.getInt(6);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		int first=0;
+		int last=0;
+		num=num*2;
+		if(sum==0) {
+			return null;
+		}
+		else if(review+num>=sum) {
+			first=review+1;
+			last=sum;
+		}
+		else {
+			first=review+1;
+			last=review+num;
+		}
+		
+		Statement st=null;
+		ResultSet rs=null;
+		EngList list=new EngList();
+		if(table.equals("CET4")) {
+			String sql=String.format("select * from CET4 where 序号>=%d and 序号<=%d",first,last);
+			try {
+				st=conn.createStatement();
+				rs=st.executeQuery(sql);
+				while(rs.next()) {
+					if(rs.getString(2)!=null)list.wordList.add(rs.getString(2));
+					if(rs.getString(3)!=null)list.pronunciation.add(rs.getString(3));
+					if(rs.getString(4)!=null)list.translation.add(rs.getString(4));
+	            }
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		else if(table.equals("CET6")) {
+			String sql=String.format("select * from CET6 where 序号>=%d and 序号<=%d",first,last);
+			try {
+				st=conn.createStatement();
+				rs=st.executeQuery(sql);
+				while(rs.next()) {
+					if(rs.getString(2)!=null)list.wordList.add(rs.getString(2));
+					if(rs.getString(3)!=null)list.pronunciation.add(rs.getString(3));
+					if(rs.getString(4)!=null)list.translation.add(rs.getString(4));
+	            }
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		map.put("单词",list.wordList);
+		map.put("发音",list.pronunciation);
+		map.put("翻译",list.translation);
+		return map;
+	}
+	
+	public boolean getReviewNum(String id, int num) {
+		int review=0;
+		int sum=0;
+		CallableStatement cs1=null;
+		try {
+			cs1=conn.prepareCall("{call get_learninfo(?,?,?,?,?,?)}");
+			cs1.setObject(1, id);
+			cs1.registerOutParameter(2,java.sql.Types.NVARCHAR);
+			cs1.registerOutParameter(3,java.sql.Types.NVARCHAR);
+			cs1.registerOutParameter(4,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(5,java.sql.Types.INTEGER);
+			cs1.registerOutParameter(6,java.sql.Types.INTEGER);
+			cs1.execute();
+			sum=cs1.getInt(5);
+			review=cs1.getInt(6);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if(review+num<sum) {
+			CallableStatement cs=null;
+			try {
+				cs=conn.prepareCall("{call get_review(?,?)}");
+				cs.setObject(1, id);
+				cs.setObject(2, num);
+				cs.execute();
+				return true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		else {
+			CallableStatement cs=null;
+			try {
+				cs=conn.prepareCall("{call reset_review(?)}");
+				cs.setObject(1, id);
+				cs.execute();
+				return true;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 	}
 }

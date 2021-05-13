@@ -32,8 +32,13 @@ public class Controller {
     }
     //用户登录
     @RequestMapping("/login")
-    public boolean login(String id,String name){
-    	return link.user_login(id, name);
+    public boolean login(String id){
+    	return link.user_login(id);
+    }
+    //修改名称
+    @RequestMapping("/changeName")
+    public boolean changeName(String id, String name){
+    	return link.change_name(id,name);
     }
     //记录用户正在学习的单词表和设置的每日学习数量
     @RequestMapping("/learn")
@@ -64,5 +69,15 @@ public class Controller {
     @RequestMapping("/getTodayWord")
     public Map<String,Object> getTodayWord(String id){
     	return link.getTodayWord(id);
+    }
+    //获取今天要复习的单词
+    @RequestMapping("/getReviewWord")
+    public Map<String,Object> getReviewWord(String id){
+    	return link.getReviewWord(id);
+    }
+    //记录用户复习单词总量
+    @RequestMapping("/getReviewNum")
+    public boolean getReviewNum(String id,int num){
+    	return link.getReviewNum(id, num);
     }
 }
